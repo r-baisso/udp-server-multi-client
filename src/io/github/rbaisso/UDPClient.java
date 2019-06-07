@@ -7,12 +7,27 @@ import java.net.InetAddress;
 public class UDPClient extends Thread{
 
     private  DatagramSocket clientSocket;
-    private  int clientPort;
+    private int clientPort;
     private  InetAddress serverIP;
     private  byte[] sendData;
     private  DatagramPacket clientPacket;
 
-    public static void main(String[] args) throws Exception {new UDPClient().run();}
+
+    public UDPClient(int clientPort,byte[] sendData) {
+        this.clientPort = clientPort;
+        this.sendData = sendData;
+    }
+
+    public static void main(String[] args) {
+
+        UDPClient client1 = new UDPClient(3001, "mensagem client1".getBytes());
+        client1.start();
+
+
+        UDPClient client2 = new UDPClient(3002, "mensagem client2".getBytes());
+        client2.start();
+
+    }
 
     @Override
     public void run() {
@@ -20,6 +35,7 @@ public class UDPClient extends Thread{
         //endereco do servidor
         String server = "127.0.0.1";
         int serverPort = 30001;
+
         try {
 
             System.out.println("Construindo conexão com servidor " + server + ":" + serverPort);
@@ -27,13 +43,12 @@ public class UDPClient extends Thread{
 
             System.out.println("Instanciando Socket de comunicação");
             //canal de comunicacao sem conexao entre client e servidor
-            clientPort = 8001;
+
             clientSocket = new DatagramSocket(clientPort);
 
             System.out.println("Construindo buffer e seu conteúdo");
             //buffer de envio e seu conteudo
-            sendData = new byte[1024];
-            sendData = "olá server".getBytes();
+
 
             System.out.println("Instanciando datagrama");
             //datagrama

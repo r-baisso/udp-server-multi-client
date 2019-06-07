@@ -2,9 +2,9 @@ package io.github.rbaisso;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 
 public class UDPServer {
+
 
     public static void main(String[] args) throws Exception {
 
@@ -21,6 +21,8 @@ public class UDPServer {
 
             System.out.println("Aguardando pacote...");
             serverSocket.receive(recievePacket);
+
+            new UDPClientConnection(recievePacket).run();
 
 
 

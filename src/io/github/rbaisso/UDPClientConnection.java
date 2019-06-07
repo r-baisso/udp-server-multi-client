@@ -5,13 +5,10 @@ import java.net.InetAddress;
 
 public class UDPClientConnection extends Thread {
 
-    private String recievedMessage;
     private DatagramPacket recievePacket;
-    private int clientId;
 
-    public UDPClientConnection(DatagramPacket recievePacket, int clientId) {
+    public UDPClientConnection(DatagramPacket recievePacket) {
         this.recievePacket = recievePacket;
-        this.clientId = clientId;
     }
 
     @Override

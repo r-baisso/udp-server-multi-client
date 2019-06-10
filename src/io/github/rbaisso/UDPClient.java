@@ -20,11 +20,11 @@ public class UDPClient extends Thread{
 
     public static void main(String[] args) {
 
-        UDPClient client1 = new UDPClient(3001, "mensagem client1".getBytes());
+        UDPClient client1 = new UDPClient(3001, "id:0, valor:1".getBytes());
         client1.start();
 
 
-        UDPClient client2 = new UDPClient(3002, "mensagem client2".getBytes());
+        UDPClient client2 = new UDPClient(3002, "id:0, valor:2".getBytes());
         client2.start();
 
     }

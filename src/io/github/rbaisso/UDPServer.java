@@ -16,6 +16,8 @@ public class UDPServer {
 
         messageToken = new HashMap<>();
 
+        new Consumer(messageToken, serverSocket).start();
+
         while (true) {
             System.out.println("Instanciando Buffer");
             byte[] serverBuffer = new byte[1024];

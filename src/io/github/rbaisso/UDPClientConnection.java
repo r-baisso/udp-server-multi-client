@@ -21,24 +21,21 @@ public class UDPClientConnection extends Thread {
         int clientPort = recievePacket.getPort();
         String fullAdress = clientIP.getHostAddress() + ":" + clientPort;
 
+        System.out.println("Abrindo pacote recebido");
+        Message message = new Message(recievePacket.getData());
 
-        if(!messageToken.containsKey(clientPort)){
-            messageToken.put(fullAdress,new String[5]);
+        //inicializa uma chave para guardar o buffer do client
+        if(!messageToken.containsKey(fullAdress)){
+            messageToken.put(fullAdress,new String[message.getPacketSize()]);
         }
 
+        Integer id = message.getId();
 
-        System.out.println("Abrindo pacote recebido");
-        String recievedMessage = new String(recievePacket.getData(),
-                recievePacket.getOffset(),
-                recievePacket.getLength());
+        String [] messageArray = messageToken.get(fullAdress);
+        messageArray[id] = message.getValue();
+        //colocando novos valores
+        messageToken.replace(fullAdress,messageArray);
 
-        String[] commaSplit = recievedMessage.split(",");
 
-        Integer id = Integer.valueOf(commaSplit[0].split(":")[1]);
-        messageToken.get(fullAdress)[id] = commaSplit[1].split(":")[1];
-
-        System.out.println("Pacote recebida do client " + clientIP + ":" + clientPort);
-        System.out.println("Conteúdo: " + recievedMessage);
-        System.out.print("\n");
     }
 }

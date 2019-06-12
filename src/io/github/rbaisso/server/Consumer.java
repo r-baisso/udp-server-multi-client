@@ -12,6 +12,7 @@ public class Consumer extends Thread {
 
     private HashMap<String, String[]> messageToken;
     private DatagramSocket serverSocket;
+    private boolean isFinished = false;
 
     public Consumer(HashMap<String, String[]> messageToken, DatagramSocket serverSocket) {
         this.messageToken = messageToken;
@@ -37,7 +38,7 @@ public class Consumer extends Thread {
                         Integer clientPort = Integer.valueOf(clientAdress[1]);
                         String clientHost = clientAdress[0];
 
-                        System.out.println("Consumindo mensagem do Client - " + clientAdress.toString());
+                        System.out.println("Consumindo mensagem do Client - " + pair.getKey());
                         if (clientMessages[i] != null) {
                             System.out.println("Mensagem de id=" + i);
                             System.out.println("Mensagem: " + clientMessages[i]);
@@ -46,12 +47,12 @@ public class Consumer extends Thread {
                             System.out.println("Mensagem de id=" + i + " não encontrada nos pacotes recebidos");
                             System.out.println("Enviando retorno de alerta para o client");
 
-                            InetAddress serverIP = InetAddress.getByName(clientHost);
+                            InetAddress clientIp = InetAddress.getByName(clientHost);
 
-                            Message message = new Message(0, "reenviar ", 1);
+                            Message message = new Message(i, "reenviar ", 1);
                             byte[] sendData = message.getBytes();
 
-                            DatagramPacket clientPacket = new DatagramPacket(sendData, sendData.length, serverIP, clientPort);
+                            DatagramPacket clientPacket = new DatagramPacket(sendData, sendData.length, clientIp, clientPort);
                             serverSocket.send(clientPacket);
                             break loopMessages;
 
@@ -64,7 +65,7 @@ public class Consumer extends Thread {
                     }
                     System.out.print("\n");
                 }
-                messageToken.clear();
+
             } catch (Exception e) {
                 e.printStackTrace();
             }

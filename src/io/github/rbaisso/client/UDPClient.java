@@ -6,6 +6,7 @@ import io.github.rbaisso.common.MessagesBuilder;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UDPClient extends Thread {
@@ -37,9 +38,16 @@ public class UDPClient extends Thread {
 
             System.out.println("Instanciando Socket de comunicação");
             clientSocket = new DatagramSocket(clientPort);
-
-            List<Message> messages = MessagesBuilder.getSorted();
-
+            List<Message> messages = new ArrayList<>();
+            if (option == 1) {
+                 messages = MessagesBuilder.getSorted();
+            } else if(option == 2){
+                messages = MessagesBuilder.getUnsorted();
+            } else if (option == 3){
+                messages = MessagesBuilder.getMissPosition();
+            } else {
+                throw new UnsupportedOperationException();
+            }
             for (Message message : messages) {
                 sendData = message.getBytes();
 
@@ -53,6 +61,8 @@ public class UDPClient extends Thread {
 
             byte[] serverBuffer = new byte[1024];
             DatagramPacket recievePacket = new DatagramPacket(serverBuffer, serverBuffer.length);
+            //para a perda de mensagens, precisamos de uma lista completa para saber qual mensagem foi perdida
+            messages = MessagesBuilder.getSorted();
 
             while(true) {
                 System.out.println("Aguardando retorno para mensagens perdidas...");

@@ -1,4 +1,4 @@
-package io.github.rbaisso;
+package io.github.rbaisso.common;
 
 import java.util.Objects;
 

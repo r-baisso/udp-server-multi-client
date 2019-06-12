@@ -1,9 +1,12 @@
-package io.github.rbaisso;
+package io.github.rbaisso.client;
+
+import io.github.rbaisso.common.Message;
+import io.github.rbaisso.common.MessagesBuilder;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.util.ArrayList;
+import java.util.List;
 
 public class UDPClient extends Thread {
 
@@ -12,22 +15,13 @@ public class UDPClient extends Thread {
     private InetAddress serverIP;
     private byte[] sendData;
     private DatagramPacket clientPacket;
+    private int option;
 
-
-    public UDPClient(int clientPort) {
+    public UDPClient(int clientPort, int option) {
+        this.option = option;
         this.clientPort = clientPort;
     }
 
-    public static void main(String[] args) {
-
-        UDPClient client1 = new UDPClient(3001);
-        client1.start();
-
-
-        UDPClient client2 = new UDPClient(3002);
-        client2.start();
-
-    }
 
     @Override
     public void run() {
@@ -35,28 +29,25 @@ public class UDPClient extends Thread {
         //endereco do servidor
         String server = "127.0.0.1";
         int serverPort = 30001;
-        ArrayList<Message> messages = new ArrayList<>();
-        messages.add(new Message(0,"ola", 4));
-        messages.add(new Message(1,"sou", 4));
-        messages.add(new Message(2,"o", 4));
-        messages.add(new Message(3,"client " + this.clientPort, 4));
+
         try {
 
             System.out.println("Construindo conexão com servidor " + server + ":" + serverPort);
             serverIP = InetAddress.getByName(server);
 
             System.out.println("Instanciando Socket de comunicação");
-            //canal de comunicacao sem conexao entre client e servidor
             clientSocket = new DatagramSocket(clientPort);
+
+            List<Message> messages = MessagesBuilder.getSorted();
 
             for (Message message : messages) {
                 sendData = message.getBytes();
-                System.out.println("Instanciando datagrama");
-                //datagrama
+
                 clientPacket = new DatagramPacket(sendData, sendData.length, serverIP, serverPort);
 
-                System.out.println("Enviando datagrama para servidor");
+                System.out.println("Enviando mensagem");
                 clientSocket.send(clientPacket);
+                System.out.println("Envio bem sucedido!");
             }
 
 
@@ -64,15 +55,18 @@ public class UDPClient extends Thread {
             DatagramPacket recievePacket = new DatagramPacket(serverBuffer, serverBuffer.length);
 
             while(true) {
-                System.out.println("Aguardando pacote...");
+                System.out.println("Aguardando retorno para mensagens perdidas...");
                 clientSocket.receive(recievePacket);
 
+                System.out.println("Resposta recebida");
                 byte[] recievePacketData = recievePacket.getData();
                 Message returnMessage = new Message(recievePacketData);
 
+                System.out.println("Mensagem da posição " + returnMessage.getId() + " foi perdida");
                 int indexMissMessage = messages.indexOf(returnMessage);
                 sendData = messages.get(indexMissMessage).getBytes();
 
+                System.out.println("Reenviando");
                 clientPacket.setData(sendData);
                 clientSocket.send(clientPacket);
             }

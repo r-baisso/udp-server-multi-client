@@ -1,4 +1,6 @@
-package io.github.rbaisso;
+package io.github.rbaisso.server;
+
+import io.github.rbaisso.common.Message;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -30,12 +32,14 @@ public class UDPClientConnection extends Thread {
         }
 
         Integer id = message.getId();
-
+        //acessa mensagens do client
         String [] messageArray = messageToken.get(fullAdress);
-        messageArray[id] = message.getValue();
-        //colocando novos valores
-        messageToken.replace(fullAdress,messageArray);
-
+        //tratamento de duplicados
+        if(messageArray[id] == null) {
+            messageArray[id] = message.getValue();
+            //colocando novos valores
+            messageToken.replace(fullAdress, messageArray);
+        }
 
     }
 }

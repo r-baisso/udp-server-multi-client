@@ -1,9 +1,10 @@
-package io.github.rbaisso;
+package io.github.rbaisso.server;
+
+import io.github.rbaisso.common.Message;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,6 +42,7 @@ public class Consumer extends Thread {
                             System.out.println("Mensagem de id=" + i);
                             System.out.println("Mensagem: " + clientMessages[i]);
                         } else {
+                            //tratamento de mensagem perdida
                             System.out.println("Mensagem de id=" + i + " não encontrada nos pacotes recebidos");
                             System.out.println("Enviando retorno de alerta para o client");
 

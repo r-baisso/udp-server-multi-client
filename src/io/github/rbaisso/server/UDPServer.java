@@ -1,4 +1,4 @@
-package io.github.rbaisso;
+package io.github.rbaisso.server;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
